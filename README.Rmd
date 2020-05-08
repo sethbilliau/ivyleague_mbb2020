@@ -1,0 +1,19 @@
+---
+title: "Visualizing the 2020 Ivy League Men's Basketball Regular Season"
+author: "Seth Billiau"
+date: "8 May 2020"
+output:
+  md_document:
+    variant: gfm
+---
+
+# Visualizing the 2020 Ivy League Men's Basketball Regular Season
+
+\url{"https://sbilliau.shinyapps.io/ivy_mbb2020/"}
+
+This RShiny application is a one-stop-shop for Ivy League Men's Basketball statistics complete with visualizations to allow for easy comparison. 
+
+## Data Source: 
+
+Sport-Reference, \url{"https://www.sports-reference.com/cbb/conferences/ivy/2020.html"}
+

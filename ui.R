@@ -48,7 +48,7 @@ ui <- fluidPage(
       ),
       h1("Visualizing the 2020 Ivy League Men's Basketball Regular Season", align="center"),
       # Source: https://loremipsum.io/
-      p("A one-stop-shop for Ivy League Men's Basketball statistics with visualizations to allow for easy comparison.", align="center", style="font-size:18px;"),
+      p("2020 Ivy League Men's Basketball statistics with interactive visualizations for easy comparison", align="center", style="font-size:18px;"),
       hr(),
       p("Source: Sport-Reference,", tags$a(href= "https://www.sports-reference.com/cbb/conferences/ivy/2020.html", "Data Source")),
       p("Image Source: Ivy League, Wikipedia Creative Commons,", tags$a(href="https://en.wikipedia.org/wiki/Ivy_League#/media/File:Ivy_League_logo.svg", "URL link."))
@@ -63,27 +63,35 @@ ui <- fluidPage(
              # Source: https://shiny.rstudio.com/reference/shiny/latest/numericInput.html
              fluidRow(
                column(4, align="left",
-                      numericInput(inputId = "mingames",
-                          label = "Filter Players by Min Games Played (1 - 30):", 
-                          value = 1, min = 1, max = 30, step = 1)
+                      selectInput(inputId = "mingames",
+                                  label = "Filter by Min Games Played:", 1:30, selected = 1)
+                      # numericInput(inputId = "mingames",
+                      #     label = "Filter by Min Games Played (1 - 30):", 
+                      #     value = 1, min = 1, max = 30, step = 1)
                ),
-               column(8, align="left",
-                  selectInput(inputId = "col_dt_v2",
-                         label = "Display Type:", c("Per Game",
-                                                    "Totals",
-                                                    "Per 40 Minutes",
-                                                    "Advanced",
-                                                    "Demographics"), selected = "Per Game")
+               column(4, align="left",
+                      selectInput(inputId = "school_filter",
+                                  label = "Filter by School:", c("Full",schools), selected = "Full")
                ),
+               column(4, align="left",
+                      selectInput(inputId = "col_dt_v2",
+                                  label = "Statistic Type (PG, Totals, per 40, etc.) :", c("Per Game",
+                                                             "Totals",
+                                                             "Per 40 Minutes",
+                                                             "Advanced",
+                                                             "Demographics"), selected = "Per Game")
+               )
              ),
              tags$br(),
-
+             p("Note: Click column headers to sort them or click-and-drag to reorder them. Click rows to highlight them and hold command to highlight multiple rows at once.", 
+               "Use the search bar to search for specific players. Use the above boxes to filter rows or change the type of statistics displayed."),
+             tags$br(),
              fluidRow(
                column(12, align="center",
                       DT::dataTableOutput("table2", width="100%")
                )
              ),
-             p("Note: Click column headers to sort them or click-and-drag to reorder them. Click rows to highlight them and hold command to highlight multiple rows at once. "),
+             
           
              # Footer Source:
              # https://stackoverflow.com/questions/30205034/shiny-layout-how-to-add-footer-disclaimer
@@ -98,6 +106,9 @@ ui <- fluidPage(
     ############## PAGE 2 ####################
     tabPanel("Player Visualizer",
                 titlePanel("Player Visualizer"),
+                p("Note: Choose statistics to plot on the x- and y-axes. Use the box below to filter players by minimum games played. Hover over data points for more information.", 
+               "Click on school names on the legend to filter by team. Use the buttons at the top of the graph to change the window size. Draw a box on the graph with you cursor to zoom in."),
+                tags$br(),
                 tags$hr(),
                 # Sidebar layout with input and output definitions ----
                 sidebarLayout(
@@ -108,9 +119,8 @@ ui <- fluidPage(
                     # Input: Numerics for the popsize, S and R ----
                     # Source: https://shiny.rstudio.com/reference/shiny/latest/numericInput.html
                     h4("Parameters:"),
-                    numericInput(inputId = "mingames_players",
-                                 label = "Min Games Played (range 1 - 30):", 
-                                 value = 1, min = 1, max = 30, step = 1),
+                    selectInput(inputId = "mingames_players",
+                                label = "Min Games Played (1 - 30):", 1:30, selected = 1),
                     selectInput(inputId = "Staty_bb_type",
                                 label = "Statistic Y Type:", c("Per Game", 
                                                                "Totals", 
@@ -144,6 +154,8 @@ ui <- fluidPage(
     ############## PAGE 3 ####################  
     tabPanel("Team Statistics",
              titlePanel("Team Statistics"),
+             p("Note: Click column headers to sort them or click-and-drag to reorder them. Click rows to highlight them and hold command to highlight multiple rows at once.", 
+               "Use the search bar to search for specific teams."),
              fluidRow(
                column(12, align="center",
                       DT::dataTableOutput("table_teams", width="100%")

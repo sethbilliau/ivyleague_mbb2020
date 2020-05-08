@@ -12,7 +12,8 @@ server <- shinyServer(function(input, output, session) {
   #Define Variables
   games_min=reactive({input$mingames})
   col_sel_v2=reactive({input$col_dt_v2})
-  df_v2 <- reactive({
+  
+  df_v2_raw <- reactive({
     if (col_sel_v2() == "Per Game") {
       basic[which(basic$G >= games_min()),]
     } else if (col_sel_v2() == "Totals") {
@@ -25,6 +26,15 @@ server <- shinyServer(function(input, output, session) {
       demo[which(demo$G >= games_min()), ]
     }
   })
+  
+  df_v2 <-  reactive({
+    if (input$school_filter == "Full") { 
+      df_v2_raw()
+    } else { 
+      df_v2_raw()[df_v2_raw()$School == input$school_filter,]
+    }
+  })
+  
 
   col_names_format_v2 <-  reactive({c("Rk",colnames(df_v2()))}) # Add Rank Column to account for rownames
   display_colnames_v2 <-  reactive({get_display_colnames(df_v2(), replacements_bb)})

@@ -101,7 +101,7 @@ replacements_bb = list(c("W.", "W%"),
                       c("Conf_W", "Conf W"),
                       c("Conf_L","Conf L"),
                       c("Home_W","Home W"),
-                      c("Home_L","Home L"),
+                      c("Home_L","ome L"),
                       c("Away_W","Away W"),
                       c("Away_L","Away L"),
                       c("FG.", "FG%"),
@@ -150,8 +150,12 @@ one_digit_bb_player = c('MP',"FG", "FGA", "X2P", "X2PA",'X3P','X3PA',"FT", "FTA"
 two_digit_bb_player = c("STPG", "TOPG", "PFPG", "BLKPG", "RP40", "AP40M", "STP40M", "BLKP40M", 
               "AST.TO", "ST.TO", "ST.PF", "BLK.PF")
 
-colnames(advanced)
 
+
+
+### Extension - Kevin ###
+# Filter by School 
+schools = as.character(sort(unique(basic$School)))
 
 
 
