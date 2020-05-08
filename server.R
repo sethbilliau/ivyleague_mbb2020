@@ -7,80 +7,8 @@ server <- shinyServer(function(input, output, session) {
   # Source: https://github.com/open-meta/uiStub
   cat("Session started.\n") # this prints when a session starts
   onSessionEnded(function() {cat("Session ended.\n\n")})  # this prints when a session ends
-  
-  ############# PAGE 1 ##################
-  #Define Variables
-  output$table_teams = DT::renderDataTable(datatable(bball_ref, 
-            colnames=team_display_names,
-            rownames = FALSE, 
-            extensions = c('FixedColumns','FixedHeader','ColReorder'),
-            # Options
-            options = list(  scrollX = TRUE,
-                             fixedHeader=F,
-                             pageLength = 10,
-                             initComplete = JS(
-                               "function(settings, json) {",
-                               "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
-                               "}"), #https://rstudio.github.io/DT/options.html
-                             
-                             fixedColumns = list(leftColumns = 1),
-                             colReorder = TRUE
-            )) %>%
-        formatRound(c("ORtg","DRtg","NRtg","FG","FGA", "X3P", "X3PA", 
-                      "FT", "FTA", "ORB","TRB", "AST","STL","BLK", 
-                      "TOV", "PF", "PTS", "OPPPTS","Pace"), digits = 1) %>% # Format Numbers: https://stackoverflow.com/questions/33171279/dt-in-shiny-and-r-custom-number-formatting
-        formatRound(c("SRS","SOS"), digits = 2) %>%
-        formatPercentage(c("W.", "FG.", "X3P.", "eFG.", "FT."), 1)
-  )
-  
-  ############# PAGE 2 ##################
-  #Define Variables
-  # Define Variables
-  x_var_t <- reactive({
-    bball_ref[,which(display_colnames_teams ==input$Statx_team) + 2]
-  })
-  
-  y_var_t <- reactive({
-    bball_ref[,which(display_colnames_teams ==input$Staty_team) + 2]
-  })
-  
-  x_str_t <- reactive({input$Statx_team})
-  y_str_t <- reactive({input$Staty_team})
-  
-  
-  f <- list(
-    family = "Roboto",
-    size = 18,
-    color = "black"
-  )
-  x_lab_t <- reactive({
-    list(
-      title = x_str_t(),
-      titlefont = f
-    )
-  })
-  y_lab_t<- reactive({
-    list(
-      title = y_str_t(),
-      titlefont = f
-    )
-  })
-  
-  # Plots
-  output$plot_team <- renderPlotly(
-    plot_team<-plot_ly(bball_ref,
-                   x=x_var_t(), 
-                   y=y_var_t(),
-                   color=bball_ref$School,
-                   colors=ivy_colors,
-                   name=bball_ref$School,
-                   type="scatter",
-                   hovertemplate = paste(x_str_t(),': %{x}<br>', 
-                                         y_str_t(), ': %{y}<br>', sep =""),
-                   mode="markers") %>% layout(xaxis = x_lab_t(), yaxis = y_lab_t())
-  )
 
-  ############# PAGE 3 ##################
+  ############# PAGE 1 ##################
   #Define Variables
   games_min=reactive({input$mingames})
   col_sel_v2=reactive({input$col_dt_v2})
@@ -125,7 +53,7 @@ server <- shinyServer(function(input, output, session) {
       formatRound(if(!(col_sel_v2() == "Totals")){col_names_format_v2()%in%one_digit_bb_player}else{NULL}, digits = 1) 
   )
   
-  ############# PAGE 4 ##################
+  ############# PAGE 2 ##################
   # Define Variables
   x_choices = reactive({label_generator(input$Statx_bb_type)})
   y_choices = reactive({label_generator(input$Staty_bb_type)})
@@ -183,4 +111,83 @@ server <- shinyServer(function(input, output, session) {
                    mode="markers") %>% layout(xaxis = x_lab_p(), yaxis = y_lab_p())
   )
   
+  ############# PAGE 1 ##################
+  #Define Variables
+  output$table_teams = DT::renderDataTable(datatable(bball_ref, 
+                                                     colnames=team_display_names,
+                                                     rownames = FALSE, 
+                                                     extensions = c('FixedColumns','FixedHeader','ColReorder'),
+                                                     # Options
+                                                     options = list(  scrollX = TRUE,
+                                                                      fixedHeader=F,
+                                                                      pageLength = 10,
+                                                                      initComplete = JS(
+                                                                        "function(settings, json) {",
+                                                                        "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
+                                                                        "}"), #https://rstudio.github.io/DT/options.html
+                                                                      
+                                                                      fixedColumns = list(leftColumns = 1),
+                                                                      colReorder = TRUE
+                                                     )) %>%
+                                             formatRound(c("ORtg","DRtg","NRtg","FG","FGA", "X3P", "X3PA", 
+                                                           "FT", "FTA", "ORB","TRB", "AST","STL","BLK", 
+                                                           "TOV", "PF", "PTS", "OPPPTS","Pace"), digits = 1) %>% # Format Numbers: https://stackoverflow.com/questions/33171279/dt-in-shiny-and-r-custom-number-formatting
+                                             formatRound(c("SRS","SOS"), digits = 2) %>%
+                                             formatPercentage(c("W.", "FG.", "X3P.", "eFG.", "FT."), 1)
+  )
+  
+  ############# PAGE 2 ##################
+  #Define Variables
+  # Define Variables
+  x_var_t <- reactive({
+    bball_ref[,which(display_colnames_teams ==input$Statx_team) + 2]
+  })
+  
+  y_var_t <- reactive({
+    bball_ref[,which(display_colnames_teams ==input$Staty_team) + 2]
+  })
+  
+  x_str_t <- reactive({input$Statx_team})
+  y_str_t <- reactive({input$Staty_team})
+  
+  
+  f <- list(
+    family = "Roboto",
+    size = 18,
+    color = "black"
+  )
+  x_lab_t <- reactive({
+    list(
+      title = x_str_t(),
+      titlefont = f
+    )
+  })
+  y_lab_t<- reactive({
+    list(
+      title = y_str_t(),
+      titlefont = f
+    )
+  })
+  
+  # Plots
+  output$plot_team <- renderPlotly(
+    plot_team<-plot_ly(bball_ref,
+                       x=x_var_t(), 
+                       y=y_var_t(),
+                       color=bball_ref$School,
+                       colors=ivy_colors,
+                       name=bball_ref$School,
+                       type="scatter",
+                       hovertemplate = paste(x_str_t(),': %{x}<br>', 
+                                             y_str_t(), ': %{y}<br>', sep =""),
+                       mode="markers") %>% layout(xaxis = x_lab_t(), yaxis = y_lab_t())
+  )
+  
 })
+
+
+
+# DEPLOYMENT 
+# library(rsconnect)
+# rsconnect::setAccountInfo()
+# deployApp("~/Desktop/ivy_bball", appName = "ivy_mbb2020")
