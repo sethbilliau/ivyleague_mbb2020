@@ -1,0 +1,16 @@
+.sel {
+  margin-left:25px;
+  list-style-type: disc;
+  list-style-position: inside;
+  text-indent: -1em;
+}
+      
+img {
+  max-width:100%;
+  max-height:50%;
+}
+
+input[type=text]:focus {
+  border: 3px solid #555;
+}
+
