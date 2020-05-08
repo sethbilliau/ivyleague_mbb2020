@@ -26,32 +26,47 @@ server <- shinyServer(function(input, output, session) {
     }
   })
 
-  col_names_format_v2 <-  reactive({colnames(df_v2())})
+  col_names_format_v2 <-  reactive({c("Rk",colnames(df_v2()))}) # Add Rank Column to account for rownames
   display_colnames_v2 <-  reactive({get_display_colnames(df_v2(), replacements_bb)})
 
-
-
-  output$table2 = DT::renderDataTable(
+  # Reorders CounterColumn
+  js_reorder <- c(
+    "table.on('draw.dt', function(){",
+    "  var PageInfo = table.page.info();",
+    "  table.column(0, {page: 'current'}).nodes().each(function(cell,i){", 
+    "    cell.innerHTML = i + 1 + PageInfo.start;",
+    "  });",
+    "})")
+  
+  output$table2 = DT::renderDataTable({
     datatable(df_v2(),
               colnames=display_colnames_v2(),
-              rownames = FALSE,
-              extensions = c('FixedColumns','FixedHeader','ColReorder'),
+              extensions = c('FixedColumns','ColReorder', "Select"),
               # Options
               options = list(  scrollX = TRUE,
-                               fixedHeader=F,
                                pageLength = 10,
                                initComplete = JS(
                                  "function(settings, json) {",
                                  "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
                                  "}"), #https://rstudio.github.io/DT/options.html
 
-                               fixedColumns = list(leftColumns = 1),
-                               colReorder = TRUE
-              )) %>% # Format Numbers: https://stackoverflow.com/questions/33171279/dt-in-shiny-and-r-custom-number-formatting
+                               fixedColumns = list(leftColumns = 2),
+                               colReorder = TRUE,
+                               select=TRUE
+                               
+              ), callback = JS(js_reorder)) %>% # Format Numbers: https://stackoverflow.com/questions/33171279/dt-in-shiny-and-r-custom-number-formatting
       formatRound(col_names_format_v2()%in%two_digit_bb_player, digits = 2) %>%
       formatPercentage(col_names_format_v2()%in%perc_bb_player, 1) %>%
-      formatRound(if(!(col_sel_v2() == "Totals")){col_names_format_v2()%in%one_digit_bb_player}else{NULL}, digits = 1) 
-  )
+      formatRound(if(col_sel_v2() == "Totals"){
+                    NULL
+                  } else if (col_sel_v2() %in% c("Advanced", "Per 40 Minutes")) { 
+                    col_names_format_v2()%in%(one_digit_bb_player[one_digit_bb_player != "MP"])
+                  }
+                  else {
+                    col_names_format_v2()%in%one_digit_bb_player
+                  }, digits = 1) %>%
+      formatRound(if(col_sel_v2() == "Advanced"){"WS.40"} else{NULL}, digits = 3)
+  })
   
   ############# PAGE 2 ##################
   # Define Variables
@@ -111,32 +126,36 @@ server <- shinyServer(function(input, output, session) {
                    mode="markers") %>% layout(xaxis = x_lab_p(), yaxis = y_lab_p())
   )
   
-  ############# PAGE 1 ##################
-  #Define Variables
-  output$table_teams = DT::renderDataTable(datatable(bball_ref, 
-                                                     colnames=team_display_names,
-                                                     rownames = FALSE, 
-                                                     extensions = c('FixedColumns','FixedHeader','ColReorder'),
-                                                     # Options
-                                                     options = list(  scrollX = TRUE,
-                                                                      fixedHeader=F,
-                                                                      pageLength = 10,
-                                                                      initComplete = JS(
-                                                                        "function(settings, json) {",
-                                                                        "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
-                                                                        "}"), #https://rstudio.github.io/DT/options.html
-                                                                      
-                                                                      fixedColumns = list(leftColumns = 1),
-                                                                      colReorder = TRUE
-                                                     )) %>%
-                                             formatRound(c("ORtg","DRtg","NRtg","FG","FGA", "X3P", "X3PA", 
-                                                           "FT", "FTA", "ORB","TRB", "AST","STL","BLK", 
-                                                           "TOV", "PF", "PTS", "OPPPTS","Pace"), digits = 1) %>% # Format Numbers: https://stackoverflow.com/questions/33171279/dt-in-shiny-and-r-custom-number-formatting
-                                             formatRound(c("SRS","SOS"), digits = 2) %>%
-                                             formatPercentage(c("W.", "FG.", "X3P.", "eFG.", "FT."), 1)
-  )
   
-  ############# PAGE 2 ##################
+  
+  
+  ############# PAGE 4 ##################
+  #Define Variables
+    output$table_teams = DT::renderDataTable(
+      datatable(bball_ref, 
+           colnames=team_display_names,
+           # rownames = FALSE, 
+           extensions = c('FixedColumns','ColReorder'),
+           # Options
+           options = list(  scrollX = TRUE,
+                            pageLength = 10,
+                            initComplete = JS(
+                              "function(settings, json) {",
+                              "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
+                              "}"), #https://rstudio.github.io/DT/options.html
+                            
+                            fixedColumns = list(leftColumns = 1),
+                            colReorder = TRUE
+           ),
+           callback = JS(js_reorder)) %>%
+     formatRound(c("ORtg","DRtg","NRtg","FG","FGA", "X3P", "X3PA", 
+                   "FT", "FTA", "ORB","TRB", "AST","STL","BLK", 
+                   "TOV", "PF", "PTS", "OPPPTS","Pace"), digits = 1) %>% # Format Numbers: https://stackoverflow.com/questions/33171279/dt-in-shiny-and-r-custom-number-formatting
+     formatRound(c("SRS","SOS"), digits = 2) %>%
+     formatPercentage(c("W.", "FG.", "X3P.", "eFG.", "FT."), 1)
+    )
+  
+  ############# PAGE 5 ##################
   #Define Variables
   # Define Variables
   x_var_t <- reactive({

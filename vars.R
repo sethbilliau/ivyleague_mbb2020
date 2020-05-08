@@ -34,11 +34,11 @@ label_generator= function(type_) {
   if (type_ == "Per Game") {
     colnames(basic)[5:length(basic)]
   } else if (type_ == "Totals") {
-    colnames(totals)[5:length(basic)]
+    colnames(totals)[5:length(totals)]
   } else if (type_ == "Per 40 Minutes") {
-    colnames(per_40)[5:length(basic)]
+    colnames(per_40)[5:length(per_40)]
   } else if (type_ == "Advanced") {
-    colnames(advanced)[5:length(basic)]
+    colnames(advanced)[5:length(advanced)]
   }
 }
 
@@ -146,11 +146,11 @@ demo <- merge(demo_raw, read.csv("bball_ref/player_basic.csv"), by = c("Player")
 perc_bb_player = c("X3P.", "X2P.", "ORB.","DRB.","TRB.","AST.","STL.","BLK.","TOV.",
          "USG.", "eFG.", "FG.", "FT.", "TS.", "FTr", "X3PAr", "ORB.")
 one_digit_bb_player = c('MP',"FG", "FGA", "X2P", "X2PA",'X3P','X3PA',"FT", "FTA","ORB", "DRB","TRB",
-              "AST", "STL", "BLK", "TOV", "PF","PTS")
+              "AST", "STL", "BLK", "TOV", "PF","PTS", "DWS", "OWS", "WS", "PER", "BPM")
 two_digit_bb_player = c("STPG", "TOPG", "PFPG", "BLKPG", "RP40", "AP40M", "STP40M", "BLKP40M", 
               "AST.TO", "ST.TO", "ST.PF", "BLK.PF")
 
-
+colnames(advanced)
 
 
 

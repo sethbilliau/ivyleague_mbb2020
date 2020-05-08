@@ -28,11 +28,13 @@ ui <- fluidPage(
                 display: table;
                 text-align: left;
               }
+
                ")
   ),
   # Source: https://rstudio.github.io/shinythemes/ 
   theme = shinytheme("sandstone"),
   includeCSS("styles.css"),
+  
   
   
   
@@ -46,22 +48,23 @@ ui <- fluidPage(
       ),
       h1("Visualizing the 2020 Ivy League Men's Basketball Regular Season", align="center"),
       # Source: https://loremipsum.io/
-      p("TODO", align="center"),
+      p("A one-stop-shop for Ivy League Men's Basketball statistics with visualizations to allow for easy comparison.", align="center", style="font-size:18px;"),
       hr(),
+      p("Source: Sport-Reference,", tags$a(href= "https://www.sports-reference.com/cbb/conferences/ivy/2020.html", "Data Source")),
       p("Image Source: Ivy League, Wikipedia Creative Commons,", tags$a(href="https://en.wikipedia.org/wiki/Ivy_League#/media/File:Ivy_League_logo.svg", "URL link."))
     ),
     
   
     ############## PAGE 1 ####################
     tabPanel("Player Statistics",
-             titlePanel("Full Dataset Player Statistics"),
+             titlePanel("Player Statistics"),
 
              # Input: Numerics for the popsize, S and R ----
              # Source: https://shiny.rstudio.com/reference/shiny/latest/numericInput.html
              fluidRow(
                column(4, align="left",
                       numericInput(inputId = "mingames",
-                          label = "Min Games Played (range 1 - 30):", 
+                          label = "Filter Players by Min Games Played (1 - 30):", 
                           value = 1, min = 1, max = 30, step = 1)
                ),
                column(8, align="left",
@@ -80,6 +83,7 @@ ui <- fluidPage(
                       DT::dataTableOutput("table2", width="100%")
                )
              ),
+             p("Note: Click column headers to sort them or click-and-drag to reorder them. Click rows to highlight them and hold command to highlight multiple rows at once. "),
           
              # Footer Source:
              # https://stackoverflow.com/questions/30205034/shiny-layout-how-to-add-footer-disclaimer
@@ -93,7 +97,7 @@ ui <- fluidPage(
     
     ############## PAGE 2 ####################
     tabPanel("Player Visualizer",
-                titlePanel("TODO"),
+                titlePanel("Player Visualizer"),
                 tags$hr(),
                 # Sidebar layout with input and output definitions ----
                 sidebarLayout(
@@ -128,17 +132,13 @@ ui <- fluidPage(
                   
                   # Main panel for displaying outputs ----
                   mainPanel(
-                    # TODO
                     plotlyOutput("plot2")
                   )
                 ),
-                hr(),
-                h4("TODO:"),
-                p("TODO"),
                 # Footer Source:
                 # https://stackoverflow.com/questions/30205034/shiny-layout-how-to-add-footer-disclaimer
                 hr(),
-                p("TODO")
+                p("Source: Sport-Reference,", tags$a(href= "https://www.sports-reference.com/cbb/conferences/ivy/2020.html", "Data Source"))
     ),
   
     ############## PAGE 3 ####################  
@@ -157,22 +157,7 @@ ui <- fluidPage(
     
     ############## PAGE 4 ####################  
     tabPanel("Team Visualizer",
-             titlePanel("Visualizing How Statistics Interact"),
-             fluidRow(
-               column(6,
-                      h4("The following "),
-               ),
-               column(6,
-                      tags$figure(
-                        
-                        img(src="https://www.onlinegambling.com/news/wp-content/uploads/2020/03/HarvardYaleHoops.jpg", 
-                            align="right"),
-                        tags$figcaption("Yale's Paul Atkinson Shoots over Mason Forbes' Luscious Locks (Image: Lukas Flippo/Yale Athletics)", align="center")
-                        
-                      )
-               )
-             ),
-             tags$hr(),
+             titlePanel("Team Visualizer"),
              # Sidebar layout with input and output definitions ----
              sidebarLayout(
                
@@ -194,27 +179,20 @@ ui <- fluidPage(
                
                # Main panel for displaying outputs ----
                mainPanel(
-                 # TODO
                  plotlyOutput("plot_team")
                )
              ),
              hr(),
-             h4("TODO:"),
-             p("TODO"),
-             # Footer Source: 
-             # https://stackoverflow.com/questions/30205034/shiny-layout-how-to-add-footer-disclaimer
-             hr(),
-             p("TODO")
-             
+             p("Source: Sport-Reference,", tags$a(href= "https://www.sports-reference.com/cbb/conferences/ivy/2020.html", "Data Source"))
     ),
     
     
     
-    tabPanel("Basketball Statistics Glossary",
+    tabPanel("Glossary",
              titlePanel(h1("Glossary of Basketball Statistics", align="center")),
              fluidRow(
-               column(6,
-                      h4("Basic Stats: "),
+               column(4,
+                      h4("Basic Individual Stats: "),
                       tags$li(p(tags$b("G: "), "Games")),
                       tags$li(p(tags$b("GS: "), "Games Started")),
                       tags$li(p(tags$b("MP: "), "Minutes Played")),
@@ -243,8 +221,8 @@ ui <- fluidPage(
                       
                       
                ),
-               column(6,
-                      h4("Advanced Stats: "),
+               column(4,
+                      h4("Advanced Individual Stats: "),
                       tags$li(p(tags$b("TS%: "), "True Shooting Percentage - A measure of shooting 
                                                     efficiency that takes into account 2-point field goals, 3-point field goals, and free throws.")),
                       tags$li(p(tags$b("eFG%: "), "Effective Field Goal Percentage - this statistic adjusts for the fact that a 3-point field goal is worth one more point than a 2-point field goal.")),
@@ -266,10 +244,44 @@ ui <- fluidPage(
                       tags$li(p(tags$b("OBPM: "), "Offensive Box Plus/Minus - A box score estimate of the offensive points per 100 possessions a player contributed above a league-average player, translated to an average team.")),
                       tags$li(p(tags$b("DBPM: "), "Defensive Box Plus/Minus - A box score estimate of the defensive points per 100 possessions a player contributed above a league-average player, translated to an average team.")),
                       tags$li(p(tags$b("BPM: "), "Box Plus/Minus - A box score estimate of the points per 100 possessions a player contributed above a league-average player, translated to an average team."))
+               ),
+               column(4, align="left",
+                      h4("Team Stats:", align="left"),
+                      tags$li(p(tags$b("Conf: "), "Conference Games")),
+                      tags$li(p(tags$b("Home: "), "Home Games")),
+                      tags$li(p(tags$b("Away: "), "Away Games")),
+                      tags$li(p(tags$b("ORtg: "), "Offensive Rating - offensive rating is the number of points produced by a team per hundred total individual possessions.")),
+                      tags$li(p(tags$b("DRtg: "), "Defensive Rating - offensive rating is the number of points allowed by a team per hundred total individual possessions.")),                      
+                      tags$li(p(tags$b("NRtg: "), "Net Rating - an estimate of point differential per 100 possessions.")),
+                      tags$li(p(tags$b("FG: "), "Field Goals")),
+                      tags$li(p(tags$b("FGA: "), "Field Goal Attempts")),
+                      tags$li(p(tags$b("FG%: "), "Field Goal Percentage")),
+                      tags$li(p(tags$b("2P: "), "2 Point Field Goals Made")),
+                      tags$li(p(tags$b("2PA: "), "2 Point Field Goal Attempts")),
+                      tags$li(p(tags$b("2P%: "), "2 Point Field Percentage")),
+                      tags$li(p(tags$b("3P: "), "3 Point Field Goals Made")),
+                      tags$li(p(tags$b("3PA: "), "3 Point Field Goal Attempts")),
+                      tags$li(p(tags$b("3P%: "), "3 Point Field Goal Percentage")),
+                      tags$li(p(tags$b("FT: "), "Free Throws")),
+                      tags$li(p(tags$b("FTA: "), "Free Throw Attempts")),
+                      tags$li(p(tags$b("FT%: "), "Free Throws Percentage")),
+                      tags$li(p(tags$b("ORB: "), "Offensive Rebounds")),
+                      tags$li(p(tags$b("DRB: "), "Defensive Rebounds")),
+                      tags$li(p(tags$b("TRB: "), "Total Rebounds")),
+                      tags$li(p(tags$b("AST: "), "Assists")),
+                      tags$li(p(tags$b("STL: "), "Steals")),
+                      tags$li(p(tags$b("BLK: "), "Blocks")),
+                      tags$li(p(tags$b("TOV: "), "Turnovers")),
+                      tags$li(p(tags$b("PF: "), "Personal Fouls")),
+                      tags$li(p(tags$b("PTS: "), "Points")),
+                      tags$li(p(tags$b("OPPPts: "), "Opponent Points")),
+                      tags$li(p(tags$b("SRS: "), "Simple Rating System - A rating that takes into account average point differential and strength of schedule. The rating is denominated in points above/below average, where zero is average. Non-Division I games are excluded from the ratings.")),
+                      tags$li(p(tags$b("SOS: "), "Strength of Schedule - A rating of strength of schedule. The rating is denominated in points above/below average, where zero is average. Non-Division I games are excluded from the ratings.")),
+                      tags$li(p(tags$b("Pace"), "Pace Factor - An estimate of school possessions per 40 minutes."))
                )
-             ),
-             hr(),
-             p("Source: Sport-Reference,", tags$a(href= "https://www.sports-reference.com/cbb/conferences/ivy/2020.html", "Data Source"))
+           ),
+           hr(),
+           p("Source: Sport-Reference,", tags$a(href= "https://www.sports-reference.com/cbb/conferences/ivy/2020.html", "Data Source"))
              
     )
   ),
